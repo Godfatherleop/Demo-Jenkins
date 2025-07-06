@@ -22,7 +22,7 @@ pipeline {
         sh '''
           cd backend
           pip install -r requirements.txt
-          pytest test_app.py
+          pytest test.py
         '''
       }
     }
