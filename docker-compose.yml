@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: quote-backend
+    ports:
+      - "5000:5000"
+    networks:
+      - quote-net
+
+  frontend:
+    build: ./frontend
+    container_name: quote-frontend
+    ports:
+      - "8080:80"
+    networks:
+      - quote-net
+
+networks:
+  quote-net:
+    driver: bridge
