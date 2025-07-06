@@ -8,7 +8,7 @@ pipeline {
   stages {
     stage('Clone Code') {
       steps {
-        git 'https://github.com/YOUR_USERNAME/quote-microservice.git'
+        git 'https://github.com/Godfatherleop/Demo-Jenkins.git'
       }
     }
 
