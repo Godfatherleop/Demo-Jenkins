@@ -8,8 +8,8 @@ pipeline {
   stages {
     stage('Clone Code') {
       steps {
-        git 'https://github.com/Godfatherleop/Demo-Jenkins.git'
-      }
+    git branch: 'main', url: 'https://github.com/Godfatherleop/Demo-Jenkins.git'
+     }
     }
 
     stage('Test') {
