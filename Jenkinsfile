@@ -1,6 +1,9 @@
 pipeline {
-  agent any
-
+    agent {
+    docker {
+      image 'python:3.10-slim'
+    }
+    }
   environment {
     IMAGE_NAME = "prahlad8ac/quote-backend"
   }
