@@ -1,9 +1,6 @@
 pipeline {
-    agent {
-    docker {
-      image 'python:3.10-slim'
-    }
-    }
+  agent any
+
   environment {
     IMAGE_NAME = "prahlad8ac/quote-backend"
   }
@@ -11,15 +8,20 @@ pipeline {
   stages {
     stage('Clone Code') {
       steps {
-    git branch: 'main', url: 'https://github.com/Godfatherleop/Demo-Jenkins.git'
-     }
+        git branch: 'main', url: 'https://github.com/Godfatherleop/Demo-Jenkins.git'
+      }
     }
 
     stage('Test') {
+      agent {
+        docker {
+          image 'python:3.10-slim'
+        }
+      }
       steps {
         sh '''
           cd backend
-          python3 -m pip install -r requirements.txt
+          pip install -r requirements.txt
           pytest test_app.py
         '''
       }
