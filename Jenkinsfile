@@ -1,18 +1,51 @@
 pipeline {
   agent any
 
+  environment {
+    IMAGE_NAME = "prahlad8ac/quote-backend"
+  }
+
   stages {
-    stage('Clone') {
+    stage('Clone Code') {
       steps {
         git 'https://github.com/YOUR_USERNAME/quote-microservice.git'
       }
     }
 
-    stage('Build & Run') {
+    stage('Test') {
+      steps {
+        sh '''
+          cd backend
+          pip install -r requirements.txt
+          pytest test_app.py
+        '''
+      }
+    }
+
+    stage('Build Docker Image') {
+      steps {
+        sh '''
+          docker build -t $IMAGE_NAME:latest backend/
+        '''
+      }
+    }
+
+    stage('Push to Docker Hub') {
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+          sh '''
+            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+            docker push $IMAGE_NAME:latest
+          '''
+        }
+      }
+    }
+
+    stage('Deploy with Compose') {
       steps {
         sh '''
           docker-compose down || true
-          docker-compose up -d --build --pull never
+          docker-compose up -d --build
         '''
       }
     }
@@ -20,10 +53,10 @@ pipeline {
 
   post {
     success {
-      echo "🚀 Application is running at http://localhost:8080"
+      echo "✅ Pipeline completed. Image pushed to Docker Hub and app deployed."
     }
     failure {
-      echo "Build failed 💥 Check logs."
+      echo "❌ Build or test failed."
     }
   }
 }
